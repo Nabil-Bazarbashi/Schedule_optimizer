@@ -302,8 +302,8 @@ def draw_schedule(sections):
 # ─────────────────────────────────────────────
 #  STREAMLIT UI
 # ─────────────────────────────────────────────
-st.set_page_config(page_title="UPM Course Scheduler", page_icon="📅", layout="wide")
-st.title("📅 UPM Course Scheduler")
+st.set_page_config(page_title="Schedule Optimizer", page_icon="📅", layout="wide")
+st.title("📅 Schedule Optimizer")
 st.markdown("Automatically finds the best schedule with maximum free days and minimum break time.")
 
 with st.form("schedule_form"):
