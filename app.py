@@ -281,8 +281,8 @@ def draw_schedule(sections):
     for i in range(1, len(ALL_DAYS)):
         ax.axvline(x=i, color="gray", linewidth=0.8, alpha=0.5)
 
-    legend_patches = [mpatches.Patch(color=color_map[c], label=c) for c in courses]
-    ax.legend(handles=legend_patches, loc="upper right", fontsize=8, framealpha=0.9)
+    #legend_patches = [mpatches.Patch(color=color_map[c], label=c) for c in courses]
+    #ax.legend(handles=legend_patches, loc="upper right", fontsize=8, framealpha=0.9)
     ax.set_title("Optimal Weekly Schedule", fontsize=14, fontweight="bold", pad=15)
 
     tba_sections = [s for s in sections if not parse_time(s["time"])[0]]
