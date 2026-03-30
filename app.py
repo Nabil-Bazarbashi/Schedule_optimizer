@@ -306,23 +306,19 @@ st.set_page_config(page_title="Schedule Optimizer", page_icon="📅", layout="wi
 st.title("📅 Schedule Optimizer")
 st.markdown("Automatically finds the best schedule with maximum free days and minimum break time.")
 
-with st.form("schedule_form"):
-    col1, col2 = st.columns(2)
-    with col1:
-        user_id = st.text_input("Student ID")
-    with col2:
-        password = st.text_input("Password", type="password")
 
+user_id = "4510163"
+password = "ZXCVbnm,.1"
+
+with st.form("schedule_form"):
     user_input = st.text_input(
         "Course codes (comma separated)",
         placeholder="e.g. STAT 232, MATH 101, CS 141"
     )
-
     submitted = st.form_submit_button("🔍 Generate Schedule", use_container_width=True)
-
 if submitted:
-    if not user_id or not password or not user_input:
-        st.error("Please fill in all fields.")
+    if not user_input:
+        st.error("Please enter at least one course code.")
     else:
         wanted_courses = [c.strip().upper() for c in user_input.split(",")]
 
