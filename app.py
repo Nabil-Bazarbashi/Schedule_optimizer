@@ -322,7 +322,7 @@ if submitted:
     else:
         wanted_courses = [c.strip().upper() for c in user_input.split(",")]
 
-        with st.spinner("Logging in and scraping courses..."):
+        with st.spinner("لحظات الإنتظار, إملأها بالإستغفار..."):
             try:
                 all_sections = scrape(user_id, password)
             except Exception as e:
