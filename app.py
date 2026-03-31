@@ -148,9 +148,9 @@ def scrape(user_id, password):
 # ─────────────────────────────────────────────
 def filter_courses(all_sections, wanted_courses):
     filtered = []
-    for section in all_sections:
-        for wanted in wanted_courses:
-            if wanted in section["course"].upper():
+    for wanted in wanted_courses:
+        for section in all_sections:
+            if wanted.replace(" ", "") in section["course"].upper().replace(" ", ""):
                 filtered.append(section)
                 break
     return filtered
