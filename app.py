@@ -56,24 +56,30 @@ def parse_time(time_str):
         for part in time_str.split(" & "):
             days, s, e = parse_time(part.strip())
             all_days.extend(days)
-            if start is None or s < start:
+            if start is None or (s is not None and s < start):
                 start = s
-            if end is None or e > end:
+            if end is None or (e is not None and e > end):
                 end = e
-        return all_days, start, end
+        return list(set(all_days)), start, end
 
-    parts = time_str.split(" ")
-    if len(parts) < 4:
-        return [], None, None
+    # 1. Safely find all days regardless of formatting
+    days = re.findall(r'Su|Mo|Tu|We|Th|Fr|Sa', time_str)
+    days = [DAY_MAP[d] for d in days] if days else []
 
-    days_str = parts[0]
-    start_str = parts[1]
-    end_str = parts[3]
+    # 2. Safely extract times using Regex (handles spaces, no spaces, upper/lowercase)
+    times = re.findall(r'(\d{1,2}:\d{2})\s*(AM|PM|am|pm)', time_str, re.IGNORECASE)
+    
+    if len(times) < 2:
+        return days, None, None
 
-    days = re.findall(r'Su|Mo|Tu|We|Th|Fr|Sa', days_str)
-    days = [DAY_MAP[d] for d in days]
+    def time_to_min(t_tuple):
+        h, m = map(int, t_tuple[0].split(':'))
+        period = t_tuple[1].upper()
+        if period == 'PM' and h != 12: h += 12
+        if period == 'AM' and h == 12: h = 0
+        return h * 60 + m
 
-    return days, to_minutes(start_str), to_minutes(end_str)
+    return days, time_to_min(times[0]), time_to_min(times[-1])
 
 # ─────────────────────────────────────────────
 #  SCRAPE
@@ -169,22 +175,36 @@ def filter_courses(all_sections, wanted_courses):
 def group_sections(sections):
     grouped = defaultdict(lambda: defaultdict(list))
     for section in sections:
+        # Check if there is a number in the section name
         match = re.search(r'(\d+)', section["section"])
         if match:
             group_number = match.group(1)
-            grouped[section["course"]][group_number].append(section)
+        else:
+            # FIX: If there is no number (e.g., "A", "Lec"), use the exact string so it isn't dropped!
+            group_number = section["section"].strip()
+            
+        grouped[section["course"]][group_number].append(section)
     return grouped
+
 
 def has_conflict(section1, section2):
     days1, start1, end1 = parse_time(section1["time"])
     days2, start2, end2 = parse_time(section2["time"])
+    
+    # If no days listed or TBA, there is no conflict
     if not days1 or not days2:
         return False
+        
+    # If times couldn't be parsed properly, assume no conflict
+    if start1 is None or start2 is None or end1 is None or end2 is None:
+        return False
+        
     common_days = set(days1) & set(days2)
     if not common_days:
         return False
+        
+    # Standard time overlap logic
     return start1 < end2 and start2 < end1
-
 def find_valid_combinations(grouped):
     course_groups = []
     for course, groups in grouped.items():
