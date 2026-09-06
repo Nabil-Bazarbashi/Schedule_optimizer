@@ -331,7 +331,7 @@ with st.form("schedule_form"):
         placeholder="e.g. STAT 232, MATH 101, CS 141"
     )
     submitted = st.form_submit_button("🔍 Generate Schedule", use_container_width=True)
-st.markdown(""" 💬Having a problem or a suggestion?  \n📧 **4510163@upm.edu.sa** """)
+st.markdown(""" 💬Having a problem or a suggestion?  \n📧 **4510163@upm.edu.sa** \n0562426009 """)
 
 if submitted:
     # Check if ID and password were provided
